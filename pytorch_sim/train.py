@@ -11,7 +11,7 @@ from optimizer import *
 from process import local_train, local_test
 import torch.multiprocessing as mp
 import shutil
-import a3c
+import torcha3c as a3c
 import env
 import load_trace
 import numpy as np
@@ -73,7 +73,7 @@ def train(args):
         else:
             previous_world = args.world
             previous_stage = args.stage - 1
-        file_ = "{}/a3c_super_mario_bros_{}_{}".format(args.saved_path, previous_world, previous_stage)
+        file_ = "{}/a3c_pensieve_{}_{}".format(args.saved_path, previous_world, previous_stage)
         if os.path.isfile(file_):
             global_model.load_state_dict(torch.load(file_))
 

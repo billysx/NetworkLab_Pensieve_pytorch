@@ -4,7 +4,7 @@
 
 import torch
 import env
-import a3c
+import torcha3c as a3c
 import torch.nn.functional as F
 from torch.distributions import Categorical
 from collections import deque
