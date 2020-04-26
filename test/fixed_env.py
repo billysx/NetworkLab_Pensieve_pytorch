@@ -98,7 +98,6 @@ class Environment:
         # sleep if buffer gets too large
         sleep_time = 0
         if self.buffer_size > BUFFER_THRESH:
-            print("wotounima")
             # exceed the buffer limit
             # we need to skip some network bandwidth here
             # but do not add up the delay
