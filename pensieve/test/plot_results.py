@@ -16,10 +16,8 @@ SMOOTH_P = 1
 COLOR_MAP = plt.cm.jet #nipy_spectral, Set1,Paired
 SIM_DP = 'sim_dp'
 #SCHEMES = ['BB', 'RB', 'FIXED', 'FESTIVE', 'BOLA', 'RL',  'sim_rl', SIM_DP]
-SCHEMES = ['sim_rltorch', "sim_mpc","sim_bb"]
-pic_dir = "picres"
-if not os.path.exists(pic_dir):
-	os.makedirs(pic_dir)
+SCHEMES = ["sim_my_bb", "sim_bb", SIM_DP]
+PLT_HDR = './plots/'
 
 def main():
 	time_all = {}
@@ -36,6 +34,7 @@ def main():
 		bw_all[scheme] = {}
 
 	log_files = os.listdir(RESULTS_FOLDER)
+	log_file_count = 0
 	for log_file in log_files:
 
 		time_ms = []
@@ -44,7 +43,8 @@ def main():
 		bw = []
 		reward = []
 
-		print(log_file)
+		print(str(log_file_count) +'\t'+ log_file)
+		log_file_count+=1
 
 		with open(RESULTS_FOLDER + log_file, 'rb') as f:
 			if SIM_DP in log_file:
@@ -70,6 +70,8 @@ def main():
 						q = int(parse[6])
 						if b == 4:
 							rebuff = (t - last_t) - last_b
+							if(rebuff < -1e-4):
+								rebuff = -1e-4
 							assert rebuff >= -1e-4
 							r -= REBUF_P * rebuff
 
@@ -82,7 +84,6 @@ def main():
 						last_q = q
 
 			else:
-				# print("********")
 				for line in f:
 					parse = line.split()
 					if len(parse) <= 1:
@@ -92,7 +93,6 @@ def main():
 					buff.append(float(parse[2]))
 					bw.append(float(parse[4]) / float(parse[5]) * BITS_IN_BYTE * MILLISEC_IN_SEC / M_IN_B)
 					reward.append(float(parse[6]))
-					# print(time_ms[-1],bit_rate[-1],buff[-1],bw[-1],reward[-1])
 
 		if SIM_DP in log_file:
 			time_ms = time_ms[::-1]
@@ -102,8 +102,6 @@ def main():
 
 		time_ms = np.array(time_ms)
 		time_ms -= time_ms[0]
-
-		# print log_file
 
 		for scheme in SCHEMES:
 			if scheme in log_file:
@@ -127,13 +125,9 @@ def main():
 	for l in time_all[SCHEMES[0]]:
 		schemes_check = True
 		for scheme in SCHEMES:
-			# print(scheme,end=" ")
-			# if l in time_all[scheme]:
-			# 	print(f"len(time_all[scheme][l]) {len(time_all[scheme][l])} {VIDEO_LEN}")
 			if l not in time_all[scheme] or len(time_all[scheme][l]) < VIDEO_LEN:
 				schemes_check = False
 				break
-		# print("scheme_check",schemes_check)
 		if schemes_check:
 			log_file_all.append(l)
 			for scheme in SCHEMES:
@@ -161,8 +155,9 @@ def main():
 
 	plt.ylabel('total reward')
 	plt.xlabel('trace index')
-	plt.savefig(os.path.join(pic_dir,"trace_index.png"))
-	# plt.show()
+	plt.savefig(PLT_HDR+"trace_index.png")
+	plt.close()
+	print("trace index plot written")
 
 	# ---- ---- ---- ----
 	# CDF
@@ -184,14 +179,14 @@ def main():
 
 	plt.ylabel('CDF')
 	plt.xlabel('total reward')
-	plt.savefig(os.path.join(pic_dir,"cdf.png"))
-	# plt.show()
+	plt.savefig(PLT_HDR+"cdf.png")
+	plt.close()
+	print("cdf written")
 
 
 	# ---- ---- ---- ----
 	# check each trace
 	# ---- ---- ---- ----
-	# print(time_all[SCHEMES[0]])
 	for l in time_all[SCHEMES[0]]:
 		schemes_check = True
 		for scheme in SCHEMES:
@@ -232,8 +227,9 @@ def main():
 				SCHEMES_REW.append(scheme + ': ' + str(np.sum(raw_reward_all[scheme][l][1:VIDEO_LEN])))
 
 			ax.legend(SCHEMES_REW, loc=9, bbox_to_anchor=(0.5, -0.1), ncol=int(np.ceil(len(SCHEMES) / 2.0)))
-			plt.savefig(os.path.join(pic_dir,l+".png"))
-			# plt.show()
+			plt.savefig(PLT_HDR+l+".png")
+			plt.close()
+			print("single trace " + l + "written")
 
 
 if __name__ == '__main__':

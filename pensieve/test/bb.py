@@ -65,13 +65,14 @@ def main():
         last_bit_rate = bit_rate
 
         # log time_stamp, bit_rate, buffer_size, reward
-        log_file.write(str(time_stamp / M_IN_K) + '\t' +
-                       str(VIDEO_BIT_RATE[bit_rate]) + '\t' +
-                       str(buffer_size) + '\t' +
-                       str(rebuf) + '\t' +
-                       str(video_chunk_size) + '\t' +
-                       str(delay) + '\t' +
-                       str(reward) + '\n')
+        log_file_write = (str(time_stamp / M_IN_K) + '\t' +
+                         str(VIDEO_BIT_RATE[bit_rate]) + '\t' +
+                         str(buffer_size) + '\t' +
+                         str(rebuf) + '\t' +
+                         str(video_chunk_size) + '\t' +
+                         str(delay) + '\t' +
+                         str(reward) + '\n')
+        log_file.write(log_file_write.encode('ANSI'))
         log_file.flush()
 
         if buffer_size < RESEVOIR:
@@ -84,14 +85,14 @@ def main():
         bit_rate = int(bit_rate)
 
         if end_of_video:
-            log_file.write('\n')
+            log_file.write('\n'.encode('ANSI'))
             log_file.close()
 
             last_bit_rate = DEFAULT_QUALITY
             bit_rate = DEFAULT_QUALITY  # use the default action here
             r_batch = []
 
-            print "video count", video_count
+            print("video count: " + str(video_count))
             video_count += 1
 
             if video_count > len(all_file_names):
