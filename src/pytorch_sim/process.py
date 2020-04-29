@@ -215,6 +215,7 @@ def local_train(index, args, global_model, actor_optimizer, critic_optimizer, sa
         actor_loss.backward()
         critic_loss.backward()
 
+        # gradient clipping
         torch.nn.utils.clip_grad_norm_(global_model.parameters(), args.max_grad_norm)
         # total_loss.backward()
         # (-critic_loss).backward()

@@ -1,6 +1,6 @@
 # Adaptive Video Streaming Lab
 
-于世兴 1700012988@pku.edu.cn
+于世兴 yushixing@pku.edu.cn
 
 石弼钊 shi_bizhao@pku.edu.cn
 
